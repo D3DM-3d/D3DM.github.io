@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="High-fidelity Image-to-3D Generation with Direct 3D Diffusion Model">
+  <meta name="keywords" content="sparse view 3D reconstruction, 3D generation, 3D AIGC, reconstruction model">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D3DM: High-Fidelity Image-to-3D Generation with Direct 3D Diffusion Model</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5TW3NKDFW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-P5TW3NKDFW');
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+        <a class="navbar-item" href="https://www.sudo.ai/">
+          <span class="icon">
+            <i class="fas fa-home"></i>
+          </span>
+        </a>
+
+        <!-- <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Related Research from SUDOAI (Hillbot)
+          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://one-2-3-45.github.io">
+              One-2-3-45
+            </a>
+            <a class="navbar-item" href="https://github.com/SUDO-AI-3D/zero123plus">
+              Zero123++
+            </a>
+            <a class="navbar-item" href="https://sudo-ai-3d.github.io/One2345plus_page/">
+              One-2-3-45++
+            </a>
+            <a class="navbar-item" href="https://sarahweiii.github.io/meshlrm/">
+              MeshLRM
+            </a>
+            <a class="navbar-item" href="https://chaoxu.xyz/sparp/">
+              SpaRP
+            </a> -->
+          <!-- </div>
+        </div> -->
+      </div>
+
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h2 class="title is-1 publication-title">D3DM: High-Fidelity Image-to-3D Generation with Direct 3D Diffusion Model
+            </h2>
+            <!-- <h2 class="subtitle is-size-4 publication-venue">NeurIPS 2024 <b style="color: red;">(Oral)</b></h2> -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a>Anonymous</a></span>
+              <!-- <span class="author-block">
+                <a href="https://chong-zeng.com">Chong Zeng</a><sup>*3‡</sup>,</span>
+              
+              </span> -->
+            </div>
+
+            <!-- <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>UC San Diego,</span>
+              <span class="author-block"><sup>2</sup>Hillbot Inc.,</span>
+              <span class="author-block"><sup>3</sup>Zhejiang University,</span>
+              <span class="author-block"><sup>4</sup>UCLA</span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">* Equal contribution.</span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">† Work done during internship at Hillbot Inc.</span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">‡ Work done during internship at UC San Diego.</span>
+            </div>
+          </div>
+        </div> -->
+        <div class="column has-text-centered">
+          <div class="publication-links">
+            <!-- PDF Link. -->
+            <span class="link-block">
+              <a href="" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="ai ai-arxiv"></i>
+                </span>
+                <span>arXiv</span>
+              </a>
+            </span>
+
+            <span class="link-block">
+              <a href=""
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fa fa-desktop"></i>
+                </span>
+                <span>Code</span>
+              </a>
+            </span>
+
+            <!-- <span class="link-block">
+              <a href="https://drive.google.com/drive/folders/10DIxxxK5vNBrkFrZcbSU56ZAv8jeuQcn?usp=sharing"
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fab fa-google-drive"></i>
+                </span>
+                <span>Results (GSO & OmniObject3D)</span> -->
+              <!-- </a>
+            </span> -->
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="hero is-light is-small">
+    <div class="hero-body ">
+      <div class="container">
+        <div id="results-carousel" class="carousel results-carousel">
+          <div class="item item-steve">
+            <video poster="" id="steve" autoplay controls muted loop playsinline height="100%" loading="lazy">
+              <source src="./static/videos/teaser1.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item item-chair-tp">
+            <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%" loading="lazy">
+              <source src="./static/videos/teaser2.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item item-shiba">
+            <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%" loading="lazy">
+              <source src="./static/videos/teaser3.mp4" type="video/mp4">
+            </video>
+          </div>
+          <!-- <div class="item item-fullbody">
+            <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%" loading="lazy">
+              <source src="./static/videos/composite_3.mp4" type="video/mp4">
+            </video> -->
+          </div>
+        </div>
+        <p class="text-block">
+          <FONT color=orange><b>D3DM</b></FONT> generates image-to-3D samples with impressive precision. Given a single-view image, it can produce fine-grained geometric details and high-quality 3D shapes within a matter of seconds.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+            <!-- <img src="./imgs/teaser.png" /> -->
+            <!-- <p> -->
+        <!-- MeshFormer reconstructs high-quality 3D textured meshes with fine-grained, sharp geometric details in a single feed-forward pass that takes just a few seconds. <FONT color=orange><b>MeshFormer can be trained using 8 H100 GPUs for just 2 days, whereas concurrent works require more than one hundred.</b></FONT> -->
+      <!-- </p> -->
+      <br>
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+            Diffusion Models have shown significant promise in generating high-fidelity 3D shapes from a single image. 
+However, previous methods primarily rely on image-to-multiview-to-3D approaches, enhancing 3D consistency through multi-view diffusion models. These methods are constrained by the quality of the generated multiview images and are susceptible to cumulative errors. Besides, these methods often face inconsistencies and pose uncertainties between generated 3D shapes and input images, which diminish the model's overall controllability.
+To address these challenges, we propose a Direct 3D Diffusion Model (D3DM). D3DM utilizes a Cross-modal Variational Autoencoder (CVAE) to encode each shape into latent space, featuring a Shape-Image Cross-modal Attention (SICA) that dynamically balances the influence of 3D features with 2D image information. In addition, Normal Space Sampling (NSS) enhances the performance of the CVAE to capture fine details, particularly edges and sharp features.
+To guarantee the pose controllability of the generated 3D shapes, we introduce a Rotation-Invariant technique that ensures directional consistency between the mesh and the image.
+Furthermore, D3DM utilizes a Pixel-Semantic co-guidance mechanism to generate high-quality meshes by integrating the global semantics from CLIP with the pixel-level details from DINOv2.
+Extensive experiments demonstrate that D3DM is capable of generating high-fidelity 3D shapes from single-view image.
+            </p>
+            <br>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="title is-3 has-text-centered">Method Overview</h2>
+      <img src="./imgs/pipline.png" />
+      <p> <FONT color=orange><b>D3DM</b></FONT> begins by training a Cross-modal Variational Autoencoder (CVAE) to encode each shape into a latent space, producing a shape latent embedding z. This embedding is then decoded to accurately predict the occupancy values for query points, enabling the generation of high-quality 3D shapes using the Marching Cubes algorithm. Building on the pre-trained CVAE, we develop a 3D latent diffusion model to learn the shape latent embedding from an input image. During inference, D3DM can generate high-quality 3D shapes from just a single image in a straightforward feed-forward process.
+      </p>
+      <br>
+      <br>
+
+      <h2 class="title is-3 has-text-centered">Single Image to 3D</h2>
+      <!-- <img src="./imgs/comparison.png" /> -->
+      <div class="tabs is-boxed is-centered">
+        <ul>
+          <li class="is-active" data-tab="crafts"><a>CraftsMan</a></li>
+          <li data-tab="miche"><a>Michelangelo</a></li>
+          <li data-tab="shap_e"><a>Shap-E</a></li>
+          <li data-tab="instantmesh"><a>InstantMesh</a></li>
+          <li data-tab="crm"><a>CRM</a></li>
+          <li data-tab="lgm"><a>LGM</a></li>
+          <li data-tab="one2345"><a>One2345</a></li>
+        </ul>
+      </div>
+
+      <div class="container">
+        <div id="crafts" class="content-tab">
+          <video poster="" id="crafts" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/crafts.mp4" type="video/mp4">
+        </div>
+        <div id="miche" class="content-tab">
+          <video poster="" id="miche" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/miche.mp4" type="video/mp4">
+        </div>
+        <div id="shap_e" class="content-tab">
+          <video poster="" id="shap_e" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/shape.mp4" type="video/mp4">
+        </div>
+        <div id="instantmesh" class="content-tab">
+          <video poster="" id="instantmesh" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/instantmesh.mp4" type="video/mp4">
+        </div>
+        <div id="crm" class="content-tab">
+          <video poster="" id="crm" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/crm.mp4" type="video/mp4">
+        </div>
+        <div id="lgm" class="content-tab is-active">
+          <video poster="" id="lgm" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/lgm.mp4" type="video/mp4">
+        </div>
+        <div id="one2345" class="content-tab">
+          <video poster="" id="one2345" autoplay muted loop playsinline height="100%" loading="lazy">
+            <source src="./static/videos/One2345.mp4" type="video/mp4">
+        </div>
+      </div>
+      <p style="text-align: center;"> Qualitative comparison of Image-to-3D generation on the GSO dataset.
+      </p>
+      <br>
+      <br>
+      <h2 class="title is-3 has-text-centered">Application: Text to 3D</h2>
+      <img src="./imgs/text3d.png" />
+
+      <br>
+      <br>
+      <!-- <h2 class="title is-3 has-text-centered">Geometry Enhancement</h2> -->
+      <!-- <div style="text-align: center;">
+        <img src="./imgs/enhancement_zoomed6.png" style="width: 60%;" />
+      </div> -->
+      <!-- <p> We task MeshFormer with outputting an additional 3D normal map, which can be used for geometry enhancement and
+        generating sharper geometric details. This is achieved by applying a traditional algorithm as a post-processing
+        step that aligns the mesh vertices with the normals.
+      </p> -->
+
+    </div>
+  </section>
+
+  <!-- <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code> 
+
+      </code></pre>
+    </div>
+  </section> -->
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <!-- <a class="icon-link" href="https://huggingface.co/spaces/sudo-ai/MeshFormer" class="external-link" disabled>
+          <i class="fa fa-desktop"></i>
+        </a> -->
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is borrowed from <a href="https://github.com/MeshFormer3D/meshformer3d.github.io">MeshFormer</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
